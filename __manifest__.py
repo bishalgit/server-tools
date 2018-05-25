@@ -1,35 +1,42 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "oauth_provider",
+    'name': "OAuth Provider for Odoo",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Allows to use Odoo as an OAuth2 provider""",
 
     'description': """
-        Long description of module's purpose
+        Allows to use Odoo as an OAuth2 provider
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Bishal, Siddhant",
+    'license': 'AGPL-3',
+    'installable': True,
+    'website': "https://bishalgit.github.io/oauth_provider/",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
-    'category': 'Uncategorized',
-    'version': '0.1',
+    'category': 'Authentication',
+    'version': '11.0.1.1',
 
+    'external_dependancies': {
+        'python': ['oauthlib'],
+    },
     # any module necessary for this one to work correctly
     'depends': ['base'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'security/oauth_provider_security.xml',
+        'security/ir.model.access.csv',
+        'views/oauth_provider_client.xml',
+        'views/oauth_provider_scope.xml',
+        'templates/authorization.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
+    'pre_init_hook': 'pre_init_hook',
 }
