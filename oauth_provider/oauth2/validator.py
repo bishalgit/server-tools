@@ -47,11 +47,11 @@ class OdooValidator(RequestValidator):
         auth_string_decoded = base64.b64decode(auth_string)
 
         # If we don't have a proper auth string, get values in the request body
-        if ':' not in auth_string_decoded:
+        if b':' not in auth_string_decoded:
             client_id = request.client_id
             client_secret = request.client_secret
         else:
-            client_id, client_secret = auth_string_decoded.split(':', 1)
+            client_id, client_secret = auth_string_decoded.split(b':', 1)
 
         self._load_client(request)
         return (request.client.identifier == client_id) and \

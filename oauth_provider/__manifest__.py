@@ -32,7 +32,7 @@
         'security/ir.model.access.csv',
         'views/oauth_provider_client.xml',
         'views/oauth_provider_scope.xml',
-        'templates/authorization.xml',
+        'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

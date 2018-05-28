@@ -159,7 +159,6 @@ class OAuth2ProviderController(http.Controller):
         if client_id is None:
             client_id = http.request.session.get(
                 'oauth_credentials', {}).get('client_id')
-
         client = http.request.env['oauth.provider.client'].sudo().search([
             ('identifier', '=', client_id),
         ])
