@@ -111,23 +111,19 @@ class OAuthProviderClient(models.Model):
                     backend=default_backend(),
                 )
             elif algorithm_prefix in ('RS', 'PS'):
-                _logger.warning("Before RS")
                 key = rsa.generate_private_key(
                     public_exponent=65537, key_size=2048,
                     backend=default_backend(),
                 )
-                _logger.warning("After RS")
             else:
                 raise exceptions.UserError(
                     _('You can only generate private keys for asymetric '
                       'algorithms!'))
-            _logger.warning("Before client")
             client.jwt_private_key = key.private_bytes(
                 encoding=Encoding.PEM,
                 format=PrivateFormat.TraditionalOpenSSL,
                 encryption_algorithm=NoEncryption(),
             )
-            _logger.warning("After RS")
 
     @api.multi
     def _compute_jwt_public_key(self):
@@ -177,11 +173,11 @@ class OAuthProviderClient(models.Model):
             """ Generate a JSON Web Token using a custom payload from the client
             """
             payload = self._generate_jwt_payload(request)
-            return jwt.encode(
+            return str(jwt.encode(
                 payload,
                 request.client.jwt_private_key,
                 algorithm=request.client.jwt_algorithm,
-            )
+            ))[2:-1]
 
         # Add the custom generator only if none is already defined
         if self.token_type == 'jwt' and 'token_generator' not in kwargs:
