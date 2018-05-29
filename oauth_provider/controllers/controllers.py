@@ -6,6 +6,7 @@ import werkzeug.wrappers
 from datetime import datetime
 from odoo import http, fields
 from odoo.addons.web.controllers.main import ensure_db
+from ..oauth2.validator import OdooValidator
 
 _logger = logging.getLogger(__name__)
 
@@ -154,7 +155,6 @@ class OAuth2ProviderController(http.Controller):
         Not all parameters are required, depending on the application type
         """
         ensure_db()
-
         # If no client_id is specified, get it from session
         if client_id is None:
             client_id = http.request.session.get(
@@ -162,16 +162,13 @@ class OAuth2ProviderController(http.Controller):
         client = http.request.env['oauth.provider.client'].sudo().search([
             ('identifier', '=', client_id),
         ])
-
         if not client:
             return self._json_response(
                 data={'error': 'invalid_client_id'}, status=401)
         oauth2_server = client.get_oauth2_server()
-
         # Retrieve needed arguments for oauthlib methods
         uri, http_method, body, headers = self._get_request_information()
         credentials = {'scope': scope}
-
         # Retrieve the authorization code, if any, to get Odoo's user id
         existing_code = http.request.env[
             'oauth.provider.authorization.code'].search([
@@ -185,13 +182,13 @@ class OAuth2ProviderController(http.Controller):
             ('client_id.identifier', '=', client_id),
             ('refresh_token', '=', refresh_token),
         ])
+        _logger.warning("Hello")
         if existing_token:
             credentials['odoo_user_id'] = existing_token.user_id.id
-
         headers, body, status = oauth2_server.create_token_response(
             uri, http_method=http_method, body=body, headers=headers,
             credentials=credentials)
-
+        _logger.warning("headers " + str(headers) + " body: " + str(body) + " status: " + str(status))
         return werkzeug.wrappers.BaseResponse(
             body, status=status, headers=headers)
 
@@ -231,6 +228,12 @@ class OAuth2ProviderController(http.Controller):
         Similar to Google's "userinfo" request
         """
         ensure_db()
+        auth = http.request.httprequest.headers.get('Authorization', ' ')
+        auth_type, auth_string = auth.split(' ', 1)
+        if auth_type != 'Basic':
+            _logger.warning("Bearer")
+            access_token = auth_string
+            _logger.warning(access_token)
         token = self._check_access_token(access_token)
         if not token:
             return self._json_response(
@@ -284,20 +287,3 @@ class OAuth2ProviderController(http.Controller):
             uri, http_method=http_method, body=body, headers=headers)
         return werkzeug.wrappers.BaseResponse(
             body, status=status, headers=headers)
-# class OauthProvider(http.Controller):
-#     @http.route('/oauth_provider/oauth_provider/', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
-
-#     @http.route('/oauth_provider/oauth_provider/objects/', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('oauth_provider.listing', {
-#             'root': '/oauth_provider/oauth_provider',
-#             'objects': http.request.env['oauth_provider.oauth_provider'].search([]),
-#         })
-
-#     @http.route('/oauth_provider/oauth_provider/objects/<model("oauth_provider.oauth_provider"):obj>/', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('oauth_provider.object', {
-#             'object': obj
-#         })
