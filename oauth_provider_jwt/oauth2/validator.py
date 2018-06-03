@@ -26,7 +26,8 @@ class JWTOdooValidator(OdooValidator):
     https://github.com/idan/oauthlib/oauthlib/oauth2/rfc6749/request_validator.py
     """
 
-    def _get_request_information(self, request):
+    @staticmethod
+    def _get_request_information(request):
         """ Retrieve needed arguments for oauthlib methods """
         uri = request.base_url
         http_method = request.method
@@ -36,7 +37,8 @@ class JWTOdooValidator(OdooValidator):
 
         return uri, http_method, body, headers
 
-    def _check_access_token(self, access_token, request):
+    @staticmethod
+    def _check_access_token(access_token, request):
         """ Check if the provided access token is valid """
         token = http.request.env['oauth.provider.token'].search([
             ('token', '=', access_token),
@@ -46,7 +48,7 @@ class JWTOdooValidator(OdooValidator):
 
         oauth2_server = token.client_id.get_oauth2_server()
         # Retrieve needed arguments for oauthlib methods
-        uri, http_method, body, headers = self._get_request_information(request)
+        uri, http_method, body, headers = JWTOdooValidator._get_request_information(request)
 
         # Validate request information
         valid, oauthlib_request = oauth2_server.verify_request(
@@ -57,7 +59,8 @@ class JWTOdooValidator(OdooValidator):
 
         return False
 
-    def _extract_jwt(self, request):
+    @staticmethod
+    def _extract_jwt(request):
         """ Extract auth string from request headers """
         auth = request.headers.get('Authorization', ' ')
         auth_type, auth_string = auth.split(' ', 1)
@@ -66,22 +69,25 @@ class JWTOdooValidator(OdooValidator):
 
         return auth_string
 
+    @staticmethod
     def _extract_jwt_info(self, auth_string):
         """ Extract header, payload, and signature from jwt """
         header, payload, signature = auth_string.split('.')
         return jwt.get_unverified_header(auth_string), jwt.decode(auth_string, verify=False), signature
 
+    @staticmethod
     def authenticate_jwt(self, request, *args, **kwargs):
         """ Authenticate the jwt """
-        auth_string = self._extract_jwt(request)
-        unverified_header, unverified_payload, signature = self._extract_jwt_info(auth_string)
+        auth_string = JWTOdooValidator._extract_jwt(request)
+        unverified_header, unverified_payload, signature = JWTOdooValidator._extract_jwt_info(auth_string)
 
-        token = self._check_access_token(auth_string, request)
+        token = JWTOdooValidator._check_access_token(auth_string, request)
         if not token:
             return False, False
 
         # Get client public key
-        payload = jwt.decode(auth_string, token.client_id.jwt_public_key, algorithms=unverified_header['alg'], audience=token.client_id.identifier)
+        payload = jwt.decode(auth_string, token.client_id.jwt_public_key,
+                             algorithms=unverified_header['alg'], audience=token.client_id.identifier)
         if payload:
             return token, payload
         else:
