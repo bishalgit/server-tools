@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import werkzeug
+import json
 from odoo import http
 from odoo.addons import oauth_provider
 from odoo.addons.web.controllers.main import ensure_db
 from ..oauth2.validator import JWTOdooValidator
 
+
 class OAuth2ProviderController(
         oauth_provider.controllers.controllers.OAuth2ProviderController):
-    jwtOdooValidator = JWTOdooValidator();
     @http.route(
         '/oauth2/public_key', type='http', auth='none', methods=['GET'])
     def public_key(self, client_id=None, *args, **kwargs):
@@ -27,7 +28,7 @@ class OAuth2ProviderController(
         """ Returns the public key of the requested client """
         ensure_db()
 
-        token, payload = self.jwtOdooValidator.authenticate_jwt(http.request.httprequest)
+        token, payload = JWTOdooValidator.authenticate_jwt(http.request.httprequest, *args, **kwargs)
         if not token:
             return self._json_response(
                 data={'error': 'invalid_or_expired_token'}, status=401)
