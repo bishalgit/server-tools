@@ -11,6 +11,7 @@
                             <field name="jwt_scope_id"/>
                             <field name="jwt_algorithm" attrs="{'required': [('token_type', '=', 'jwt')]}"/>
                             <button string="Generate a new random private key" name="generate_private_key" type="object" colspan="2" attrs="{'invisible': [('jwt_algorithm', 'in', [False, 'HS256', 'HS384', 'HS512'])]}"/>
+                            <button string="Generate a new random hmac key" name="generate_hmac_key" type="object" colspan="2" attrs="{'invisible': [('jwt_algorithm', 'not in', ['HS256', 'HS384', 'HS512'])]}"/>
                             <field name="jwt_private_key"/>
                             <field name="jwt_public_key"/>
                         </group>
