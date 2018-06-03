@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+import hashlib
 import logging
 from datetime import datetime, timedelta
 from odoo import models, api, fields, exceptions, _
@@ -124,6 +126,26 @@ class OAuthProviderClient(models.Model):
                 format=PrivateFormat.TraditionalOpenSSL,
                 encryption_algorithm=NoEncryption(),
             )
+
+    @api.multi
+    def generate_hmac_key(self):
+        """ Generate a private hmac key for HMAC algorithm clients """
+        for client in self:
+            algorithm_prefix = client.jwt_algorithm[:2]
+            algorithm_suffix = client.jwt_algorithm[2:]
+
+            if algorithm_prefix == 'HS':
+                if algorithm_suffix == '256':
+                    key = hashlib.sha256(os.urandom(32)).hexdigest()
+                elif algorithm_suffix == '384':
+                    key = hashlib.sha384(os.urandom(48)).hexdigest()
+                elif algorithm_suffix == '512':
+                    key = hashlib.sha512(os.urandom(64)).hexdigest()
+            else:
+                raise exceptions.UserError(
+                    _('You can only generate private hmac keys for symetric '
+                      'algorithms!'))
+            client.jwt_private_key = key
 
     @api.multi
     def _compute_jwt_public_key(self):
