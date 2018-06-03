@@ -31,7 +31,7 @@ class JWTOdooValidator(OdooValidator):
         uri = request.base_url
         http_method = request.method
         body = oauthlib.common.urlencode(
-            http.request.httprequest.values.items())
+            request.values.items())
         headers = request.headers
 
         return uri, http_method, body, headers
