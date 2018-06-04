@@ -43,7 +43,7 @@ class OAuth2ProviderController(
         _logger.warning("**********")
         # _logger.warning(str(http.request.httprequest.body))
 
-        client = APIValidator.authenticate_jwt(http.request.httprequest)
+        client = APIValidator.authenticate_api(http.request.httprequest)
         if not client:
             return self._json_response(
                 data={'error': 'invalid_or_expired_token'}, status=401)
