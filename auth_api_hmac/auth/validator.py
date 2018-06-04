@@ -26,13 +26,7 @@ class APIValidator(object):
     @staticmethod
     def _verify_client(method, host, path, client_id, body, signature):
         """ Check if the provided access client_id is valid """
-        _logger.warning(method)
-        _logger.warning(host)
-        _logger.warning(path)
-        _logger.warning(client_id)
-        _logger.warning(body)
-        _logger.warning(signature)
-
+        
         client = http.request.env['oauth.provider.client'].search([
             ('identifier', '=', client_id),
         ])
@@ -96,7 +90,7 @@ class APIValidator(object):
         return (base64.urlsafe_b64decode(client_id)).decode(encoding="utf-8"), signature
 
     @staticmethod
-    def authenticate_jwt(request, *args, **kwargs):
+    def authenticate_api(request, *args, **kwargs):
         """ Authenticate the jwt """
         method, host, path, auth_string, body = APIValidator._get_request_information(request)
         client_id, signature = APIValidator._extract_key_info(auth_string)
