@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <div t-name="authorize_deny">
+        <button type="submit" style="width:128px" name="submit_button" value="oauth_authorize" class="btn btn-success">Authorize</button>
+        <button type="button" style="width:128px" name="submit_button" value="oauth_deny" class="btn btn-danger oauth_deny">Deny</button>
+    </div>
+</templates>
