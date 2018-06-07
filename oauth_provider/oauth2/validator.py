@@ -160,7 +160,7 @@ class OdooValidator(RequestValidator):
             self, client_id, code, request, *args, **kwargs):
         """ Store the authorization code into the database """
         redirect_uri = http.request.env['oauth.provider.redirect.uri'].search([
-            ('name', '=', request.redirect_uri),
+            ('name', '=', request.redirect_uri), ('client_id', '=', request.client.id)
         ])
         http.request.env['oauth.provider.authorization.code'].sudo().create({
             'code': code['code'],
@@ -179,7 +179,7 @@ class OdooValidator(RequestValidator):
             'token_type': token['token_type'],
             'refresh_token': token.get('refresh_token'),
             'client_id': request.client.id,
-            'user_id': token.get('odoo_user_id', request.odoo_user.id),
+            'user_id': token.get('user_id', request.odoo_user.id),
             'scope_ids': [(6, 0, request.client.scope_ids.filtered(
                 lambda record: record.code in scopes).ids)],
             'expires_at': fields.Datetime.to_string(
