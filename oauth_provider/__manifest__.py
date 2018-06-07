@@ -30,6 +30,7 @@
     'data': [
         'security/oauth_provider_security.xml',
         'security/ir.model.access.csv',
+        'views/assets.xml',
         'views/oauth_provider_client.xml',
         'views/oauth_provider_scope.xml',
         'views/templates.xml',
@@ -38,5 +39,6 @@
     'demo': [
         'demo/demo.xml',
     ],
+    'qweb': ['static/src/xml/authorize.xml'],
     'pre_init_hook': 'pre_init_hook',
 }
