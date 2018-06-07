@@ -15,8 +15,9 @@
                             <p t-field="scope.description" class="list-group-item-text"/>
                         </span>
                     </div>
-                    <div class="clearfix oe_login_buttons text-center">
-                        <button type="submit" class="btn btn-primary">Authorize</button>
+                    <div class="clearfix oe_login_buttons text-center oauth_provider">
+                        <!--<button type="submit" style="width:128px" class="btn btn-success">Authorize</button>
+                        <button type="button" style="width:128px" class="btn btn-danger oauth_deny">Deny</button>-->
                     </div>
                 </form>
             </t>
