@@ -1,0 +1,9 @@
+<odoo>
+    <data>
+        <template id="assets_frontend_extend" name="custom assets" inherit_id="web.assets_frontend">
+            <xpath expr="//script[last()]" position="after">
+                <script type="text/javascript" src="/oauth_provider/static/src/js/oauth_deny.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>
