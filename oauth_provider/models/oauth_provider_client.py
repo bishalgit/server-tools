@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import hashlib
 import uuid
 import logging
@@ -21,7 +22,7 @@ class OAuthProviderClient(models.Model):
     name = fields.Char(required=True, help='Name of this client.')
     identifier = fields.Char(
         string='Client Identifier', required=True, readonly=True,
-        default=lambda self: str(uuid.uuid4()), copy=False,
+        default=lambda self: hashlib.sha256(str(uuid.uuid4()).encode('utf-8')).hexdigest(), copy=False,
         help='Unique identifier of the client.')
     secret = fields.Char(
         help='Optional secret used to authenticate the client.')
@@ -126,3 +127,9 @@ class OAuthProviderClient(models.Model):
 
         # Use a sha256 to avoid a too long final string
         return hashlib.sha256(user_identifier.encode('utf-8')).hexdigest()
+
+    @api.multi
+    def generate_client_secret(self):
+        """ Generate a private hmac key for HMAC algorithm clients """
+        for client in self:
+            client.secret = hashlib.sha384(os.urandom(128)).hexdigest()
