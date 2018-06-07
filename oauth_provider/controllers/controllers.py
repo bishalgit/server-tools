@@ -145,6 +145,15 @@ class OAuth2ProviderController(http.Controller):
 
         return werkzeug.utils.redirect(headers['Location'], code=status)
 
+    @http.route(
+        '/oauth2/deny', type='json', auth='user', methods=['POST'])
+    def deny_post(self, submit_button="oauth_deny", *args, **kwargs):
+        """ Redirect to the requested URI during the authorization """
+        if submit_button == "oauth_deny":
+            data = dict([('grant', 400)])
+            data["redirect_uri"] = http.request.session.get('oauth_credentials').get('redirect_uri')
+            return json.dumps(data)
+
     @http.route('/oauth2/token', type='http', auth='none', methods=['POST'],
                 csrf=False)
     def token(self, client_id=None, client_secret=None, redirect_uri=None,
@@ -176,15 +185,14 @@ class OAuth2ProviderController(http.Controller):
                 ('code', '=', code),
             ])
         if existing_code:
-            credentials['odoo_user_id'] = existing_code.user_id.id
+            credentials['user_id'] = existing_code.user_id.id
         # Retrieve the existing token, if any, to get Odoo's user id
         existing_token = http.request.env['oauth.provider.token'].search([
             ('client_id.identifier', '=', client_id),
             ('refresh_token', '=', refresh_token),
         ])
-        _logger.warning("Hello")
         if existing_token:
-            credentials['odoo_user_id'] = existing_token.user_id.id
+            credentials['user_id'] = existing_token.user_id.id
         headers, body, status = oauth2_server.create_token_response(
             uri, http_method=http_method, body=body, headers=headers,
             credentials=credentials)
@@ -219,6 +227,8 @@ class OAuth2ProviderController(http.Controller):
             'res.users', res_id=token.user_id.id)
         if 'id' in user_data:
             data.update(user_id=token.generate_user_id())
+            data.update(name=user_data["name"])
+            data.update(email=user_data["login"])
         return self._json_response(data=data)
 
     @http.route('/oauth2/userinfo', type='http', auth='none', methods=['GET'])
