@@ -25,6 +25,7 @@
                             <group>
                                 <field name="identifier"/>
                                 <field name="secret"/>
+                                <button string="Generate the secret key" name="generate_client_secret" type="object" colspan="2"/>
                                 <field name="application_type"/>
                             </group>
                             <group>
