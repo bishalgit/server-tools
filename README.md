@@ -5,5 +5,5 @@ This repo will contain all the modules for backend and server. Such as:
 * HMAC authentication for requests
 
 ## Collaborators
-* [Bishal Pun]() - Director of Research & Development
-* [Siddhant Pageni]() - Technical Lead
+* [Bishal Pun](https://github.com/bishalgit) - Director of Research & Development [Inception Innovation](https://inceptioninnovation.com/about-us#bishalpun)
+* [Siddhant Pageni](#) - Technical Lead @ [Inception Innovation](https://inceptioninnovation.com/about-us#siddhantpageni)
