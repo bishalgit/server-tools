@@ -9,7 +9,7 @@
         Allows to use Odoo as an OAuth2 provider
     """,
 
-    'author': "Bishal, Siddhant",
+    'author': "Bishal",
     'license': 'AGPL-3',
     'installable': True,
     'website': "https://bishalgit.github.io/server-tools/",
