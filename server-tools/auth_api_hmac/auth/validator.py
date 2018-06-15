@@ -36,18 +36,18 @@ class APIValidator(object):
 
         # Prepare parameter/value pairs
         canonical_string = urllib.parse.urlencode({'client_id':base64.urlsafe_b64encode(bytes(client_id,'utf-8')).decode()}) + "&" + urllib.parse.urlencode(body)
-
+        _logger.warning(canonical_string)
         # Prepare message
         message = method + "\n" + host + "\n" + path + "\n" + canonical_string
 
         # Calculate an an RFC 2104-compliant HMAC with the SHA256 hash algorithm
-        algorithm_suffix = client.jwt_algorithm[2:]
+        algorithm_suffix = client.api_key_algorithm[2:]
         if algorithm_suffix == '256':
-            h = hmac.HMAC(bytes(client.jwt_private_key, 'utf-8'), hashes.SHA256(), backend=default_backend())
+            h = hmac.HMAC(bytes(client.api_key, 'utf-8'), hashes.SHA256(), backend=default_backend())
         elif algorithm_suffix == '384':
-            h = hmac.HMAC(bytes(client.jwt_private_key, 'utf-8'), hashes.SHA384(), backend=default_backend())
+            h = hmac.HMAC(bytes(client.api_key, 'utf-8'), hashes.SHA384(), backend=default_backend())
         else:
-            h = hmac.HMAC(bytes(client.jwt_private_key, 'utf-8'), hashes.SHA512(), backend=default_backend())
+            h = hmac.HMAC(bytes(client.api_key, 'utf-8'), hashes.SHA512(), backend=default_backend())
 
         _logger.warning("message:" + message)
         # Update byte message into hmac
