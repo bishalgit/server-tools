@@ -1,0 +1,20 @@
+<odoo>
+    <data>
+        <record id="view_oauth_provider_client_form" model="ir.ui.view">
+            <field name="name">oauth.provider.client.form</field>
+            <field name="model">oauth.provider.client</field>
+            <field name="inherit_id" ref="oauth_provider.view_oauth_provider_client_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="API Key">
+                        <group>
+                            <field name="api_key_algorithm"/>
+                            <button string="Generate a new random api key" name="generate_api_key" type="object" colspan="2"/>
+                            <field name="api_key"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
