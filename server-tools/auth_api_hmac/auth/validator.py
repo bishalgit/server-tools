@@ -26,7 +26,7 @@ class APIValidator(object):
     @staticmethod
     def _verify_client(method, host, path, client_id, body, signature):
         """ Check if the provided access client_id is valid """
-        
+
         client = http.request.env['oauth.provider.client'].search([
             ('identifier', '=', client_id),
         ])
@@ -76,7 +76,7 @@ class APIValidator(object):
         auth = request.headers.get('Authorization', ' ')
         auth_type, auth_string = auth.split(' ', 1)
         if auth_type != 'Key':
-            return ''
+            return request.method, request.host, request.path, '', request.args
 
         if request.method == "GET":
             return request.method, request.host, request.path, auth_string, request.args
@@ -93,6 +93,8 @@ class APIValidator(object):
     def authenticate_api(request, *args, **kwargs):
         """ Authenticate the jwt """
         method, host, path, auth_string, body = APIValidator._get_request_information(request)
+        if auth_string == '':
+            return False
         client_id, signature = APIValidator._extract_key_info(auth_string)
 
         # start validating the request
@@ -101,4 +103,3 @@ class APIValidator(object):
             return False
 
         return client
-
