@@ -19,5 +19,7 @@
         'oauth_provider',
         'oauth_provider_jwt',
     ],
-    'data': [],
+    'data': [
+        'views/oauth_provider_client.xml',
+    ],
 }
