@@ -185,7 +185,10 @@ class OdooValidator(RequestValidator):
             'expires_at': fields.Datetime.to_string(
                 datetime.now() + timedelta(seconds=token['expires_in'])),
         })
-        return request.client.redirect_uri_ids[0].name
+        if request.client.application_type != "legacy application":
+            return request.client.redirect_uri_ids[0].name
+
+        return False
 
     def validate_bearer_token(self, token, scopes, request):
         """ Ensure the supplied bearer token is valid, and allowed for the scopes
