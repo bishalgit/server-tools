@@ -70,13 +70,13 @@ class JWTOdooValidator(OdooValidator):
         return auth_string
 
     @staticmethod
-    def _extract_jwt_info(self, auth_string):
+    def _extract_jwt_info(auth_string):
         """ Extract header, payload, and signature from jwt """
         header, payload, signature = auth_string.split('.')
         return jwt.get_unverified_header(auth_string), jwt.decode(auth_string, verify=False), signature
 
     @staticmethod
-    def authenticate_jwt(self, request, *args, **kwargs):
+    def authenticate_jwt(request, *args, **kwargs):
         """ Authenticate the jwt """
         auth_string = JWTOdooValidator._extract_jwt(request)
         unverified_header, unverified_payload, signature = JWTOdooValidator._extract_jwt_info(auth_string)
