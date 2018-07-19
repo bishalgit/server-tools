@@ -1,0 +1,29 @@
+<odoo>
+	<data>
+        <!-- mail.mail inherit form view -->
+        <record id="email_manager_view_message_form" model="ir.ui.view">
+            <field name="name">mail.message.form</field>
+            <field name="model">mail.message</field>
+            <field name="inherit_id" ref="mail.view_message_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email_from']" position="after">
+                    <button name="%(mail.action_email_compose_message_wizard)d" string="Reply" type="action" icon="fa-reply text-warning"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="email_manager_action_view_mail_message" model="ir.actions.act_window">
+            <field name="name">Messages</field>
+            <field name="res_model">mail.message</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[['model','not in',["blog.blog"]]]</field>
+            <field name="search_view_id" ref="mail.view_message_search"/>
+        </record>
+        <!-- Menu Items for handling Mails in this module -->
+        <menuitem id="email_manager_root_menuitem" name="Email Manager" sequence="1"/>
+
+        <!-- This Menu Item Must have a parent -->
+        <menuitem id="email_manager_list_1" name="Emails" parent="email_manager.email_manager_root_menuitem" sequence="2" action="mail.action_view_mail_mail"/>
+        <menuitem id="email_manager_list_2" name="Messages" parent="email_manager.email_manager_root_menuitem" sequence="2" action="email_manager.email_manager_action_view_mail_message"/>
+    </data>
+</odoo>
