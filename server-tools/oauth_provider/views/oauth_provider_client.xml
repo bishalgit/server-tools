@@ -8,6 +8,7 @@
                     <field name="name"/>
                     <field name="identifier"/>
                     <field name="application_type"/>
+                    <field name="token_expires_in"/>
                     <field name="scope_ids"/>
                 </tree>
             </field>
@@ -26,6 +27,7 @@
                                 <field name="identifier"/>
                                 <field name="secret"/>
                                 <button string="Generate the secret key" name="generate_client_secret" type="object" colspan="2"/>
+                                <field name="token_expires_in"/>
                                 <field name="application_type"/>
                             </group>
                             <group>

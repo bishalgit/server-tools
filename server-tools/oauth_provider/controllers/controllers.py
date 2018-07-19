@@ -174,7 +174,7 @@ class OAuth2ProviderController(http.Controller):
         if not client:
             return self._json_response(
                 data={'error': 'invalid_client_id'}, status=401)
-        oauth2_server = client.get_oauth2_server()
+        oauth2_server = client.get_oauth2_server(token_expires_in=client.token_expires_in)
         # Retrieve needed arguments for oauthlib methods
         uri, http_method, body, headers = self._get_request_information()
         credentials = {'scope': scope}
@@ -213,7 +213,7 @@ class OAuth2ProviderController(http.Controller):
                 data={'error': 'invalid_or_expired_token'}, status=401)
 
         token_lifetime = (fields.Datetime.from_string(token.expires_at) -
-                          datetime.now()).seconds
+                          datetime.now()).total_seconds()
         # Base data to return
         data = {
             'audience': token.client_id.identifier,
@@ -272,7 +272,7 @@ class OAuth2ProviderController(http.Controller):
         return self._json_response(data=data)
 
     @http.route(
-        '/oauth2/revoke_token', type='http', auth='none', methods=['POST'])
+        '/oauth2/revoke_token', type='http', auth='none', methods=['POST'], csrf=False)
     def revoke_token(self, token=None, *args, **kwargs):
         """ Revoke the supplied token """
         ensure_db()

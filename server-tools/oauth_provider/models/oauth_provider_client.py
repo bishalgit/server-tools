@@ -26,6 +26,7 @@ class OAuthProviderClient(models.Model):
         help='Unique identifier of the client.')
     secret = fields.Char(
         help='Optional secret used to authenticate the client.')
+    token_expires_in = fields.Integer(string='Token expiration time in seconds.')    
     skip_authorization = fields.Boolean(
         help='Check this box if the user shouldn\'t be prompted to authorize '
         'or not the requested scopes.')
